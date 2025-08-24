@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import ComposableArchitecture
 
 @main
 struct TCACurriculumApp: App {
@@ -25,7 +26,9 @@ struct TCACurriculumApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Day5MemoScreen(store: Store(initialState: Day5MemoFeature.State()) {
+                Day5MemoFeature()
+            })
         }
         .modelContainer(sharedModelContainer)
     }
