@@ -18,11 +18,37 @@ struct Day10GitHubScreen: View {
                 case .searchHistory:
                     ForEach(Array(store.searchHistories), id: \.self) { searchHistory in
                         Text(searchHistory)
+                            .onTapGesture {
+                                store.send(.historyRowTapped(searchHistory))
+                            }
                     }
                 case .repository:
-                    ForEach(store.repositories) { repository in
+                    Picker("表示", selection: $store.listState) {
+                        ForEach(ListState.allCases, id: \.self) { type in
+                            switch type {
+                            case .normal:
+                                Text("通常")
+                            case .favorite:
+                                Text("お気に入り")
+                            }
+                        }
+                    }
+                    ForEach(store.listRepositories) { repository in
                         HStack {
                             Text(repository.name)
+                            if repository.isFavorite {
+                                Button {
+                                    store.send(.removeFavorite(repository))
+                                } label: {
+                                    Image(systemName: "star.fill")
+                                }
+                            } else {
+                                Button {
+                                    store.send(.addFavorite(repository))
+                                } label: {
+                                    Image(systemName: "star")
+                                }
+                            }
                         }
                     }
                 case .loading:
@@ -33,6 +59,9 @@ struct Day10GitHubScreen: View {
             } header: {
                 TextField("検索", text: $store.searchText)
             }
+        }
+        .refreshable {
+            store.send(.loadNextPage)
         }
     }
 }

@@ -8,13 +8,26 @@
 import ComposableArchitecture
 import Foundation
 
+enum ListState: CaseIterable {
+    case normal
+    case favorite
+}
+
 @Reducer
 struct Day10GitHubFeature {
     @ObservableState
     struct State {
         var searchText = ""
-        var repositories: [Repository] = []
-        var favorites: [Repository] = []
+        var listRepositories: IdentifiedArrayOf<Repository> {
+            switch listState {
+            case .normal:
+                return repositories
+            case .favorite:
+                return favorites
+            }
+        }
+        var repositories: IdentifiedArrayOf<Repository> = []
+        var favorites: IdentifiedArrayOf<Repository> = []
         var searchHistories: Set<String> = []
         var isLoading = false
         var error: String?
@@ -31,11 +44,17 @@ struct Day10GitHubFeature {
                 return .repository
             }
         }
+        var listState: ListState = .normal
     }
 
     enum Action: BindableAction {
         case search
         case searchResponse(TaskResult<GitHubSearchResult>)
+        case addFavorite(Repository)
+        case removeFavorite(Repository)
+        case historyRowTapped(String)
+        case loadNextPage
+        case loadResponse(TaskResult<GitHubSearchResult>)
         case binding(BindingAction<State>)
     }
 
@@ -61,8 +80,11 @@ struct Day10GitHubFeature {
                 state.isLoading = true
                 state.repositories = []
                 state.error = nil
+                state.listState = .normal
+                state.currentPage = 1  // 追加が必要
+                state.hasMorePages = true
                 let searchText = state.searchText
-                let searchPage = state.repositories.count
+                let searchPage = state.currentPage
                 return .run { send in
                     await send(.searchResponse(
                         TaskResult {
@@ -71,12 +93,51 @@ struct Day10GitHubFeature {
                     ))
                 }
             case .searchResponse(.success(let searchResult)):
-                state.repositories = searchResult.repositories
+                state.repositories = IdentifiedArray(uniqueElements: searchResult.repositories)
                 state.isLoading = false
                 state.searchHistories.insert(state.searchText)
                 return .none
             case .searchResponse(.failure(let error)):
                 state.error = error.localizedDescription
+                state.isLoading = false
+                return .none
+            case .addFavorite(let repository):
+                if var repo = state.repositories[id: repository.id] {
+                    repo.isFavorite = true
+                    state.repositories[id: repository.id] = repo
+                    state.favorites.append(repo)
+                }
+                return .none
+            case .removeFavorite(let repository):
+                if var repo = state.repositories[id: repository.id] {
+                    repo.isFavorite = false
+                    state.repositories[id: repository.id] = repo
+                    state.favorites.remove(id: repo.id)
+                }
+                return .none
+            case .historyRowTapped(let historyText):
+                state.searchText = historyText
+                return .none
+            case .loadNextPage:
+                guard state.hasMorePages && !state.isLoading else {
+                    return .none
+                }
+                state.isLoading = true
+                let searchText = state.searchText
+                let searchPage = state.currentPage + 1
+                return .run { send in
+                    await send(.loadResponse(
+                        TaskResult {
+                            try await githubClient.search(searchText, searchPage)
+                        }
+                    ))
+                }
+            case .loadResponse(.success(let result)):
+                state.currentPage += 1
+                state.repositories.append(contentsOf: result.repositories)
+                state.hasMorePages = result.hasMore
+                return .none
+            case .loadResponse(.failure(_)):
                 state.isLoading = false
                 return .none
             case .binding(\.searchText):
@@ -103,6 +164,7 @@ struct Repository: Identifiable {
     let description: String?
     let starCount: Int
     let language: String?
+    var isFavorite: Bool = false
 }
 
 struct GitHubClient {
