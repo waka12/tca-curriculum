@@ -11,7 +11,7 @@ import Foundation
 @Reducer
 struct Day2CounterHistoryFeature {
     @ObservableState
-    struct State {
+    struct State: Equatable {
         var count: Int = 0
         var doubleCount: Int { count * 2 }
 
@@ -24,6 +24,8 @@ struct Day2CounterHistoryFeature {
         case resetButtonTapped
         case clearHistoryButtonTapped
     }
+
+    @Dependency(\.uuid) var uuid
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -53,7 +55,7 @@ struct Day2CounterHistoryFeature {
              state.histories.removeLast()
          }
          state.histories.insert(
-             HistoryRow(history: history, currentCount: state.count),
+            HistoryRow(id: uuid(), history: history, currentCount: state.count),
              at: 0
          )
      }
@@ -66,8 +68,8 @@ extension Day2CounterHistoryFeature {
         case reset = "リセット"
     }
 
-    struct HistoryRow: Identifiable, Hashable {
-        var id: UUID = UUID()
+    struct HistoryRow: Identifiable, Hashable, Equatable {
+        var id: UUID
         var history: History
         var currentCount: Int
     }

@@ -17,7 +17,7 @@ struct Day3ToDoFeature {
     }
 
     struct ToDoItem: Identifiable, Equatable {
-        var id: UUID = UUID()
+        var id: UUID
         var text: String
         var isCompleted: Bool
     }
@@ -30,6 +30,8 @@ struct Day3ToDoFeature {
         case binding(BindingAction<State>)
     }
 
+    @Dependency(\.uuid) var uuid
+
     var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
@@ -38,7 +40,7 @@ struct Day3ToDoFeature {
                 guard !state.todoText.isEmpty else {
                     return .none
                 }
-                state.todos.append(ToDoItem(text: state.todoText, isCompleted: false))
+                state.todos.append(ToDoItem(id: uuid(), text: state.todoText, isCompleted: false))
                 state.todoText = ""
                 return .none
             case .deleteButtonTapped(let todo):

@@ -28,6 +28,7 @@ struct Day1CounterFeature {
                 state.count += 1
                 return .none
             case .decreaseButtonTapped:
+                guard state.count > 0 else { return .none }
                 state.count -= 1
                 return .none
             case .resetButtonTapped:

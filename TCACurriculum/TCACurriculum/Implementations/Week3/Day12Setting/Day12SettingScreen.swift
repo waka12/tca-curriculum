@@ -33,8 +33,6 @@ struct Day12SettingScreen: View {
 #Preview {
     Day12SettingScreen(store: Store(initialState: Day12SettingFeature.State()) {
         Day12SettingFeature()
-    } withDependencies: {
-        $0.userDefaultsClient = .previewValue
     }
     )
 }

@@ -90,8 +90,6 @@ extension UserDefaultsClient: DependencyKey {
         setNotificationEnabled: { _ in },
         getNotificationEnabled: { false }
     )
-
-    static let previewValue = testValue
 }
 
 extension DependencyValues {
