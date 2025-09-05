@@ -10,7 +10,7 @@ import ComposableArchitecture
 @Reducer
 struct Day7WeatherFeature {
     @ObservableState
-    struct State {
+    struct State: Equatable {
         var weather: Weather?
         var isLoading = false
         var error: String?
@@ -58,7 +58,7 @@ struct WeatherClient {
     var fetchWeather: @Sendable () async throws -> Weather
 }
 
-struct Weather {
+struct Weather: Equatable {
     var temperature: Int
     var condition: String
 }

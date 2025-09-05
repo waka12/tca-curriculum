@@ -11,7 +11,7 @@ import Foundation
 @Reducer
 struct Day8SearchFeature {
     @ObservableState
-    struct State {
+    struct State: Equatable {
         var searchText: String = ""
         var searchResults: [SearchResult] = []
         var isSearching: Bool = false
@@ -76,9 +76,9 @@ extension SearchClient: DependencyKey {
     static let liveValue = Self(search: { query in
         try await Task.sleep(for: .seconds(1))
         return [
-            SearchResult(title: "\(query) Result1"),
-            SearchResult(title: "\(query) Result2"),
-            SearchResult(title: "\(query) Result3")
+            SearchResult(id: "1", title: "\(query) Result1"),
+            SearchResult(id: "2", title: "\(query) Result2"),
+            SearchResult(id: "3", title: "\(query) Result3")
         ]
     })
 }
@@ -90,7 +90,7 @@ extension DependencyValues {
     }
 }
 
-struct SearchResult: Identifiable {
-    var id: UUID = UUID()
+struct SearchResult: Identifiable, Equatable {
+    var id: String
     var title: String
 }
