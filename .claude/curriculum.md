@@ -498,6 +498,60 @@ struct CounterView: View {
 
 ---
 
+## 📚 Week 9: 実務環境構築
+
+### Day 41-43: SPMマルチモジュール化
+**課題**: Week 8のTodoistアプリをモジュール分割
+- 要件:
+  - [ ] Feature単位でのSPMパッケージ化
+  - [ ] 共通モジュール（Models, UI, Utils）の切り出し
+  - [ ] 依存関係グラフの最適化
+  - [ ] モジュール間のインターフェース設計
+  - [ ] ビルド時間の計測と改善
+- 学習ポイント: Package.swift, モジュール境界設計, 循環参照回避
+
+**期待されるモジュール構成**:
+```
+TodoistApp/
+├── Package.swift
+├── Sources/
+│   ├── App/              # メインアプリ
+│   ├── AppFeature/       # ルートFeature
+│   ├── AuthFeature/      # 認証関連
+│   ├── ProjectFeature/   # プロジェクト管理
+│   ├── TaskFeature/      # タスク管理
+│   ├── SharedModels/     # 共通モデル
+│   ├── CommonUI/         # 共通UIコンポーネント
+│   └── Utilities/        # ユーティリティ
+└── Tests/
+```
+
+### Day 44-45: CI/CD構築
+**課題**: Xcode Cloudでの自動化環境構築
+- 要件:
+  - [ ] PRごとの自動テスト実行
+  - [ ] テストカバレッジレポート生成
+  - [ ] ビルド成功/失敗の通知設定
+  - [ ] TestFlightへの自動デプロイ
+  - [ ] 並列テスト実行の最適化
+  - [ ] SwiftLint/SwiftFormatの統合
+- 学習ポイント: Xcode Cloud, ワークフロー設定, 環境変数管理
+
+**ワークフロー設計**:
+1. **PR Workflow**: テスト実行 → Linting → カバレッジ確認
+2. **Main Branch Workflow**: テスト → ビルド → TestFlight配信
+3. **Release Workflow**: 本番ビルド → App Store Connect
+
+**レビュー依頼**: 
+```
+「Week 9の実務環境構築を完成させました。モジュール設計とCI/CD構成についてLevel 3でレビューをお願いします。特に以下の点を見てください：
+- モジュール間の依存関係の適切性
+- CI/CDパイプラインの効率性
+- ビルド時間の最適化
+```
+
+---
+
 ## 🎯 達成度チェックリスト
 
 ### 初級（Week 1-2 完了後）
@@ -521,5 +575,11 @@ struct CounterView: View {
 - [ ] チーム開発を意識したコードが書ける
 - [ ] TCAのベストプラクティスを理解している
 - [ ] 新規プロジェクトでTCAを採用できる
+
+### エンタープライズレベル（Week 9 完了後）
+- [ ] マルチモジュールアーキテクチャを設計できる
+- [ ] CI/CDパイプラインを構築できる
+- [ ] ビルド時間を最適化できる
+- [ ] 大規模チームでの開発環境を整備できる
 
 ---

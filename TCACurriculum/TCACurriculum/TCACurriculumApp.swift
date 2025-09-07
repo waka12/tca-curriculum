@@ -26,8 +26,8 @@ struct TCACurriculumApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Day12SettingScreen(store: Store(initialState: Day12SettingFeature.State()) {
-                Day12SettingFeature()
+            Day15LoginScreen(store: Store(initialState: Day15LoginFeature.State()) {
+                Day15LoginFeature()
             })
         }
         .modelContainer(sharedModelContainer)
