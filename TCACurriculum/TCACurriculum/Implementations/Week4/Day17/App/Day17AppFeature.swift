@@ -21,7 +21,7 @@ struct Day17AppFeature {
     }
 
     enum Tab {
-    case items, favorites
+        case items, favorites
     }
 
     enum Action: BindableAction {
