@@ -40,7 +40,7 @@ struct Day23CacheSearchFeature {
             case .search:
                 return .run { [searchText = state.searchText, isOnline = state.isOnline] send in
                     if let item = await cacheClient.get(searchText) {
-                        await send(.cacheSearch(item.data))
+                        await send(.cacheSearch(item.data as! Day23Item))
                         return
                     }
                     guard isOnline else {
@@ -154,7 +154,7 @@ extension CacheClient: DependencyKey {
   }
 
 struct CachedData {
-    let data: Day23Item
+    let data: Any
     let expiredAt: Date
 
     var isExpired: Bool {
