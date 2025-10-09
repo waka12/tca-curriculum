@@ -26,8 +26,8 @@ struct TCACurriculumApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Day21RegisterFormScreen(store: Store(initialState: Day21RegisterFormFeature.State()) {
-                Day21RegisterFormFeature()
+            Day28WebSocketChatScreen(store: Store(initialState: Day28WebSocketChatFeature.State()) {
+                Day28WebSocketChatFeature()
             })
         }
         .modelContainer(sharedModelContainer)
