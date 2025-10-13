@@ -139,11 +139,9 @@ actor WebSocketClient {
 
     func connect() -> AsyncStream<WebSocketEvent> {
         AsyncStream { continuation in
-            if Bool.random() {
+            
                 url = URL(string: "wss://echo.websocket.org")
-            } else {
-                url = URL(string: "wss://invalid.example.com")
-            }
+
             let task = URLSession.shared.webSocketTask(with: url!)
             self.webSocketTask = task
 
