@@ -45,6 +45,7 @@ struct Day31LargeListFeature {
                     state.currentPage += 1
                     state.isLoading = true
                     return .run { [currentPage = state.currentPage]send in
+                        // 追加してから削除をすると、Listの仕様によりスクロール位置が最下部になり無限スクロールが発生するため、追加前に削除する
                         await send(.clearItems)
                         await send(.itemsLoaded(
                             TaskResult {

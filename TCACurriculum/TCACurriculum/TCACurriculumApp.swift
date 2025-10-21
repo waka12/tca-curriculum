@@ -26,8 +26,8 @@ struct TCACurriculumApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Day30LikeNotionScreen(store: Store(initialState: Day30LikeNotionFeature.State()) {
-                Day30LikeNotionFeature()
+            Day32TowCounterScreen(store: Store(initialState: Day32TowCounterFeature.State()) {
+                Day32TowCounterFeature()
             })
         }
         .modelContainer(sharedModelContainer)
